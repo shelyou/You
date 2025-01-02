@@ -1,0 +1,510 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Form</title>
+    <link rel="stylesheet" href="from.css">
+</head>
+<body>
+
+<div class="container">
+    <!-- Bahan Kue Form -->
+    <div class="form-container" id="form-barang">
+        <h2>Bahan Kue</h2>
+        <form>
+            <div class="form-group">
+                <label for="tanggal-barang-masuk">Barang Masuk</label>
+                <input type="date" id="tanggal-barang-masuk">
+            </div>
+
+            <div class="form-group">
+                <label for="tipe-barang">Tipe Barang</label>
+                <select id="tipe-barang" onchange="toggleBarangFields(); hitungTotalHarga()">
+                    <option value="" disabled selected>Pilih tipe barang</option>
+                    <option value="carton">Carton</option>
+                    <option value="plastik">Karung</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="nama-barang">Nama Barang</label>
+                <input type="text" id="nama-barang" placeholder="Masukkan nama barang" oninput="filterNamaBarang('bahan_kue')" autocomplete="off">
+                <span class="kode-barang" id="kode-barang-display">00000</span>
+                <div class="dropdown" id="dropdown-nama-barang"></div>
+            </div>
+
+            <div class="form-group">
+                <label for="jumlah-barang">Jumlah Barang</label>
+                <input type="number" id="jumlah-barang" placeholder="Masukkan jumlah barang">
+            </div>
+
+            <div id="carton-fields" class="additional-fields" style="display:none;">
+                <div class="form-group">
+                    <label for="harga-karungan">Harga Carton</label>
+                    <input type="number" id="harga-karungan" placeholder="Masukkan harga karungan untuk Carton" oninput="hitungTotalHarga()">
+                </div>
+
+                <div class="form-group">
+                    <label for="tipe-isi">Tipe Isi</label>
+                    <select id="tipe-isi" onchange="toggleIsiFields(); hitungTotalHarga()">
+                        <option value="" disabled selected>Pilih tipe isi</option>
+                        <option value="pax">Pax</option>
+                        <option value="kilogram">Kilogram</option>
+                    </select>
+                </div>
+
+                <div id="pax-fields" class="additional-fields" style="display:none;">
+                    <div class="form-group">
+                        <label for="jumlah-pax">Jumlah Pax</label>
+                        <input type="number" id="jumlah-pax" placeholder="Masukkan jumlah Pax" oninput="hitungTotalHarga()">
+                    </div>
+                    <div class="form-group">
+                        <label for="harga-pax">Harga per Pax</label>
+                        <input type="number" id="harga-pax" placeholder="Masukkan harga per Pax" oninput="hitungTotalHarga()">
+                    </div>
+                    <div class="form-group">
+                        <label for="total-harga-isi">Total Harga Tipe Isi</label>
+                        <input type="text" id="total-harga-isi" placeholder="Total Harga Tipe Isi" readonly>
+                    </div>
+                </div>
+
+                <div id="kilogram-fields" class="additional-fields" style="display:none;">
+                    <div class="form-group">
+                        <label for="jumlah-kilogram">Jumlah Kilogram</label>
+                        <input type="number" id="jumlah-kilogram" placeholder="Masukkan jumlah Kilogram" oninput="hitungTotalHarga()">
+                    </div>
+                    <div class="form-group">
+                        <label for="harga-kilogram">Harga per Kilogram</label>
+                        <input type="number" id="harga-kilogram" placeholder="Masukkan harga per Kilogram" oninput="hitungTotalHarga()">
+                    </div>
+                </div>
+            </div>
+
+            <div id="plastik-fields" class="additional-fields" style="display:none;">
+                <div class="form-group">
+                    <label for="harga-satuan">Harga Satuan</label>
+                    <input type="number" id="harga-satuan" placeholder="Masukkan harga satuan untuk Karung" oninput="hitungTotalHarga()">
+                </div>
+                <div class="form-group">
+                    <label for="harga-dus">Isi /KG</label>
+                    <input type="number" id="harga-dus" placeholder="Masukkan harga dus untuk Karung" oninput="hitungTotalHarga()">
+                </div>
+
+                <div class="form-group">
+                    <label for="harga-per-kg">Harga per Kg</label>
+                    <input type="text" id="harga-per-kg" readonly>
+                </div>
+                <div class="form-group">
+                    <label for="harga-setengah-kg">Harga ½ Kg</label>
+                    <input type="text" id="harga-setengah-kg" readonly>
+                </div>
+                <div class="form-group">
+                    <label for="harga-seperempat-kg">Harga ¼ Kg</label>
+                    <input type="text" id="harga-seperempat-kg" readonly>
+                </div>
+                <div class="form-group">
+                    <label for="harga-satu-ons">Harga 1 Ons</label>
+                    <input type="text" id="harga-satu-ons" readonly>
+                </div>
+                <div class="form-group">
+                    <label for="harga-setengah-ons">Harga 0.5 Ons</label>
+                    <input type="text" id="harga-setengah-ons" readonly>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="diskon-barang">Diskon Barang (%)</label>
+                <input type="number" id="diskon-barang" placeholder="Masukkan diskon barang" oninput="hitungTotalHarga()">
+            </div>
+
+            <div class="form-group">
+                <label for="total-harga">Total Harga Barang Setelah Diskon</label>
+                <input type="text" id="total-harga" placeholder="Total Harga Barang" readonly>
+            </div>
+
+            <button type="submit" class="soft-button">Simpan</button>
+        </form>
+
+        <p>
+            <a href="javascript:void(0)" onclick="showPlasticForm()" style="color: #FF1493; text-decoration: none;">Plastik</a>
+        </p>
+    </div>
+
+    <!-- Plastik Form -->
+<div class="form-container" id="plastik-form" style="display:none;">
+    <h2>Plastik</h2>
+    <form>
+        <!-- Barang Masuk -->
+        <div class="form-group">
+            <label for="tanggal-barang-masuk-plastik">Tanggal Barang Masuk</label>
+            <input type="date" id="tanggal-barang-masuk-plastik">
+        </div>
+
+        <!-- Tipe Barang -->
+        <div class="form-group">
+            <label for="tipe-barang-plastik">Tipe Barang</label>
+            <select id="tipe-barang-plastik" onchange="showInputTambahan()">
+                <option value="" disabled selected>Pilih tipe barang</option>
+                <option value="PE">PE</option>
+                <option value="PP">PP</option>
+                <option value="HD">HD</option>
+                <option value="Box">Box</option>
+                <option value="Gelas">Gelas</option>
+                <option value="Mika">Mika</option>
+                <option value="Garpu">Garpu</option>
+                <option value="Sendok">Sendok</option>
+                <option value="Piring">Piring</option>
+                <option value="Timwall">Timwall</option>
+                <option value="Mangkok">Mangkok</option>
+            </select>
+        </div>
+
+        <!-- Nama Barang -->
+        <div class="form-group">
+            <label for="nama-barang-plastik">Nama Barang</label>
+            <input type="text" id="nama-barang-plastik" placeholder="Masukkan nama barang" autocomplete="off">
+            <span class="kode-barang" id="kode-barang-display-plastik">00000</span>
+            <div class="dropdown" id="dropdown-nama-barang-plastik"></div>
+        </div>
+
+        <!-- Jumlah Barang -->
+        <div class="form-group">
+            <label for="jumlah-barang-plastik">Jumlah Barang</label>
+            <input type="number" id="jumlah-barang-plastik" placeholder="Masukkan jumlah barang">
+        </div>
+
+        <!-- Harga Barang -->
+        <div class="form-group">
+            <label for="harga-satuan-plastik">Harga Barang (Rp)</label>
+            <input type="number" id="harga-satuan-plastik" placeholder="Masukkan harga barang">
+        </div>
+
+        <!-- Input Tambahan untuk Setiap Tipe Barang -->
+        <div id="input-tambahan">
+            <!-- Input Tambahan untuk PE -->
+            <div id="input-tambahan-pe" style="display: none;">
+                <div class="form-group">
+                    <label for="merek-barang-pe">Merek</label>
+                    <input type="text" id="merek-barang-pe" placeholder="Masukkan merek barang">
+                </div>
+                <div class="form-group">
+                    <label for="ukuran-barang-pe">Ukuran</label>
+                    <input type="text" id="ukuran-barang-pe" placeholder="Masukkan ukuran barang">
+                </div>
+                <div class="form-group">
+                    <label for="isi-1ball">Isi 1 Ball</label>
+                    <input type="number" id="isi-1ball" placeholder="Masukkan isi 1 Ball" oninput="hitungHargaPE()">
+                </div>
+                <div class="form-group">
+                    <label for="isi-1pax">Isi 1 Pax</label>
+                    <input type="number" id="isi-1pax" placeholder="Masukkan isi 1 Pax" oninput="hitungHargaPE()">
+                </div>
+                <div class="form-group">
+                    <label for="harga-per-pax">Harga per Pax (Rp)</label>
+                    <input type="text" id="harga-per-pax" placeholder="Harga per Pax" readonly>
+                </div>
+                <div class="form-group">
+                    <label for="harga-per-biji">Harga per Biji (Rp)</label>
+                    <input type="text" id="harga-per-biji" placeholder="Harga per Biji" readonly>
+                </div>
+            </div>
+
+            <!-- Input Tambahan untuk PP -->
+            <div id="input-tambahan-pp" style="display: none;">
+    <div class="form-group">
+        <label for="merek-barang-pp">Merek</label>
+        <input type="text" id="merek-barang-pp" placeholder="Masukkan merek barang">
+    </div>
+    <div class="form-group">
+        <label for="ukuran-barang-pp">Ukuran</label>
+        <input type="text" id="ukuran-barang-pp" placeholder="Masukkan ukuran barang">
+    </div>
+    <div class="form-group">
+        <label for="harga-1kg">Harga 1 KG</label>
+        <input type="number" id="harga-1kg" placeholder="Masukkan harga 1 KG" oninput="updateHarga()">
+    </div>
+    <div class="form-group">
+        <label for="pilih-ukuran">Pilih Ukuran</label>
+        <select id="pilih-ukuran" onchange="updateHarga()">
+            
+            <option value="0.5">1/2 KG</option>
+            <option value="0.25">1/4 KG</option>
+            <option value="0.1">100 gram</option>
+        </select>
+    </div>
+    <div class="form-group">
+        <label for="harga-terpilih">Harga</label>
+        <input type="number" id="harga-terpilih" placeholder="Harga akan muncul di sini" readonly>
+    </div>
+</div>
+
+            <!-- Input Tambahan untuk HD -->
+          <div id="input-tambahan-hd" style="display: none;">
+    <!-- Pilihan Kemasan atau Ikatan -->
+    <div class="form-group">
+        <label for="jenis-barang-hd">Pilih Jenis</label>
+        <select id="jenis-barang-hd" onchange="updateJenisInput()">
+            <option value="" disabled selected>Pilih jenis barang</option>
+            <option value="kemasan">Kemasan</option>
+            <option value="ikatan">Ikatan</option>
+        </select>
+    </div>
+
+    <!-- Input untuk Kemasan -->
+    <div id="kemasan-fields" style="display: none;">
+        <div class="form-group">
+            <label for="merek-barang-hd">Merek</label>
+            <input type="text" id="merek-barang-hd" placeholder="Masukkan merek">
+        </div>
+        <div class="form-group">
+            <label for="isi-1ikatan-hd">Isi 1 Ikatan</label>
+            <input type="number" id="isi-1ikatan-hd" placeholder="Masukkan isi 1 ikatan">
+        </div>
+        <div class="form-group">
+            <label for="warna-barang-hd">Warna</label>
+            <input type="text" id="warna-barang-hd" placeholder="Masukkan warna">
+        </div>
+    </div>
+
+    <!-- Input untuk Ikatan -->
+    <div id="ikatan-fields" style="display: none;">
+        <div class="form-group">
+            <label for="warna-ikatan-hd">Warna</label>
+            <input type="text" id="warna-ikatan-hd" placeholder="Masukkan warna">
+        </div>
+        <div class="form-group">
+            <label for="harga-1kg-hd">Harga 1 Kg (Rp)</label>
+            <input type="number" id="harga-1kg-hd" placeholder="Masukkan harga 1 Kg">
+        </div>
+        <div class="form-group">
+            <label for="harga-1-2kg-hd">Harga 1/2 Kg (Rp)</label>
+            <input type="number" id="harga-1-2kg-hd" placeholder="Masukkan harga 1/2 Kg">
+        </div>
+    </div>
+</div>
+
+            <!-- Input Tambahan untuk Box -->
+            <div id="input-tambahan-box" style="display: none;">
+    <div class="form-group">
+        <label for="model-barang-box">Model</label>
+        <select id="model-barang-box">
+            <option value="snack">Snack</option>
+            <option value="pesta">Pesta</option>
+            <option value="kue">Kue</option>
+            <option value="jumbol">Jumbol</option>
+        </select>
+    </div>
+    <div class="form-group">
+        <label for="ukuran-barang-box">Ukuran</label>
+        <input type="text" id="ukuran-barang-box" placeholder="Masukkan ukuran barang">
+    </div>
+    <div class="form-group">
+        <label for="motif-barang-box">Motif</label>
+        <select id="motif-barang-box">
+            <option value="motif">Motif</option>
+            <option value="coklat">Coklat</option>
+            <option value="putih">Putih</option>
+        </select>
+    </div>
+    <div class="form-group">
+        <label for="isi-barang-box">Isi</label>
+        <input type="text" id="isi-barang-box" placeholder="Masukkan jumlah isi">
+    </div>
+    <div class="form-group">
+        <label for="harga-biji-barang-box">Harga per Biji</label>
+        <input type="text" id="harga-biji-barang-box" placeholder="Masukkan harga per biji">
+    </div>
+    <div class="form-group">
+        <label for="harga-pax-barang-box">Harga per Pax</label>
+        <input type="text" id="harga-pax-barang-box" placeholder="Masukkan harga per pax">
+    </div>
+</div>
+
+            <!-- Input Tambahan untuk Gelas -->
+            <div id="input-tambahan-gelas" style="display: none;">
+    <div class="form-group">
+        <label for="model-barang-gelas">Model Glas</label>
+        <select id="model-barang-gelas" onchange="checkModel()">
+            <option value="" selected disabled>Pilih model glas</option>
+            <option value="puding">Cap Puding</option>
+            <option value="aqua">Cap Aqua</option>
+            <option value="datar">Cap Datar</option>
+            <option value="oval">Cap Oval</option>
+        </select>
+    </div>
+    <div class="form-group">
+        <label for="ukuran-barang-gelas">Ukuran (OZ)</label>
+        <input type="text" id="ukuran-barang-gelas" placeholder="Masukkan ukuran barang dalam OZ">
+    </div>
+    
+    <div class="form-group">
+        <label for="isi-dus">Isi 1 Dus</label>
+        <input type="text" id="isi-dus" placeholder="Masukkan jumlah isi 1 dus">
+    </div>
+    <div class="form-group">
+        <label for="isi-dus-per-picis">Isi 1 Dus per Picis</label>
+        <input type="text" id="isi-dus-per-picis" placeholder="Masukkan jumlah isi per picis">
+    </div>
+    <div class="form-group">
+        <label for="isi-pax">Isi 1 Pax</label>
+        <select id="isi-pax">
+            <option value="" selected disabled>Pilih ukuran Pax</option>
+            <option value="50">50</option>
+            <option value="25">25</option>
+        </select>
+    </div>
+    <div class="form-group">
+        <label for="harga-pax">Harga 1 Pax</label>
+        <input type="number" id="harga-pax" placeholder="Masukkan harga per Pax">
+    </div>
+    <div class="form-group">
+        <label for="harga-per-biji">Harga per Biji</label>
+        <input type="number" id="harga-per-biji" placeholder="Masukkan harga per Biji">
+    </div>
+
+    <div id="tebal-tipis" class="form-group" style="display: none;">
+        <label for="ketebalan-barang-gelas">Ketebalan</label>
+        <select id="ketebalan-barang-gelas">
+            <option value="" selected disabled>Pilih ketebalan</option>
+            <option value="tebal">Tebal</option>
+            <option value="tipis">Tipis</option>
+        </select>
+    </div>
+</div>
+
+            <!-- Input Tambahan untuk Mika -->
+          <div id="input-tambahan-mika" style="display: none;">
+    <div class="form-group">
+        <label for="merek-barang-mika">Merek</label>
+        <select id="merek-barang-mika">
+            <option value="mika-pvc">Mika PVC</option>
+            <option value="mika-bronis">Mika Bronis</option>
+            <option value="mika-gulung">Mika Gulung</option>
+            <option value="mika-tumpang">Mika Tumpang</option>
+            <option value="mika-box">Mika Box</option>
+        </select>
+    </div>
+    <div class="form-group">
+        <label for="ukuran-barang-mika">Ukuran</label>
+        <select id="ukuran-barang-mika">
+            <option value="isi-1-dus">Isi 1 Dus</option>
+            <option value="isi-1-pac">Isi 1 Pac</option>
+        </select>
+    </div>
+    <div class="form-group">
+        <label for="harga-per-pak">Harga per Pak</label>
+        <input type="text" id="harga-per-pak" placeholder="Masukkan harga per pak">
+    </div>
+    <div class="form-group">
+        <label for="harga-mika">Harga</label>
+        <select id="harga-mika">
+            <option value="harga-per-biji">Harga per Biji</option>
+            <option value="harga-per-lusin">Harga per Lusin</option>
+        </select>
+    </div>
+</div>
+
+            <!-- Input Tambahan untuk Garpu -->
+            <div id="input-tambahan-garpu" style="display: none;">
+                <div class="form-group">
+                    <label for="merek-barang-garpu">Merek</label>
+                    <input type="text" id="merek-barang-garpu" placeholder="Masukkan merek barang">
+                </div>
+            </div>
+
+            <!-- Input Tambahan untuk Sendok -->
+            <div id="input-tambahan-sendok" style="display: none;">
+                <div class="form-group">
+                    <label for="merek-barang-sendok">Merek</label>
+                    <input type="text" id="merek-barang-sendok" placeholder="Masukkan merek barang">
+                </div>
+            </div>
+
+            <!-- Input Tambahan untuk Piring -->
+            <div id="input-tambahan-piring" style="display: none;">
+                <div class="form-group">
+                    <label for="merek-barang-piring">Merek</label>
+                    <input type="text" id="merek-barang-piring" placeholder="Masukkan merek barang">
+                </div>
+            </div>
+
+            <!-- Input Tambahan untuk Timwall -->
+            <div id="input-tambahan-timwall" style="display: none;">
+    <div class="form-group">
+        <label for="merek-barang-timwall">Merek</label>
+        <select id="merek-barang-timwall">
+            <option value="klear">Klear</option>
+            <option value="pp">PP</option>
+        </select>
+    </div>
+    <div class="form-group">
+        <label for="ukuran-barang-timwall">Ukuran</label>
+        <select id="ukuran-barang-timwall">
+            <option value="15ml">15 ml</option>
+            <option value="25ml">25 ml</option>
+            <option value="50ml">50 ml</option>
+            <option value="100ml">100 ml</option>
+            <option value="120ml">120 ml</option>
+            <option value="150ml">150 ml</option>
+            <option value="350ml">350 ml</option>
+            <option value="500ml">500 ml</option>
+            <option value="750ml">750 ml</option>
+            <option value="1500ml">1500 ml</option>
+            <option value="2000ml">2000 ml</option>
+            <option value="3000ml">3000 ml</option>
+        </select>
+    </div>
+    <div class="form-group">
+        <label for="isi-pak-timwall">Isi per Pak</label>
+        <input type="text" id="isi-pak-timwall" placeholder="Masukkan jumlah isi per pak">
+    </div>
+    <div class="form-group">
+        <label for="isi-pis-timwall">Isi per Pis</label>
+        <input type="text" id="isi-pis-timwall" placeholder="Masukkan jumlah isi per pis">
+    </div>
+    <div class="form-group">
+        <label for="harga-per-pax">Harga per Pax</label>
+        <input type="text" id="harga-per-pax" placeholder="Masukkan harga per pax">
+    </div>
+    <div class="form-group">
+        <label for="harga-per-pis">Harga per Pis</label>
+        <input type="text" id="harga-per-pis" placeholder="Masukkan harga per pis">
+    </div>
+</div>
+            <!-- Input Tambahan untuk Mangkok -->
+            <div id="input-tambahan-mangkok" style="display: none;">
+                <div class="form-group">
+                    <label for="merek-barang-mangkok">Merek</label>
+                    <input type="text" id="merek-barang-mangkok" placeholder="Masukkan merek barang">
+                </div>
+            </div>
+        </div>
+
+        <!-- Diskon Barang -->
+        <div class="form-group">
+            <label for="diskon-barang-plastik">Diskon Barang (%)</label>
+            <input type="number" id="diskon-barang-plastik" placeholder="Masukkan diskon barang">
+        </div>
+
+        <!-- Total Harga -->
+        <div class="form-group">
+            <label for="total-harga-barang">Total Harga Barang Setelah Diskon (Rp)</label>
+            <input type="text" id="total-harga-barang" placeholder="Total harga barang" readonly>
+        </div>
+
+        <!-- Tombol Simpan -->
+        <button type="submit" class="soft-button">Simpan</button>
+    </form>
+
+    <!-- Navigasi -->
+    <p>
+        <a href="javascript:void(0)" onclick="showCakeForm()" style="color: #FF1493; text-decoration: none;">Bahan Kue</a>
+    </p>
+</div>
+
+<script src="from.js"></script>
+<script src="uang.js"></script>
+<script src="plastik.js"></script>
+</body>
+</html>
