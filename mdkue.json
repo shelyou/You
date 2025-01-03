@@ -1,0 +1,92 @@
+{
+  "tables": [
+    {
+      "name": "Kue",
+      "data": [
+        {
+          "no": 1,
+          "nama_barang": "Monitor",
+          "kode_gudang": "KD001",
+          "kode_toko": "KD-TK001",
+          "harga_1000_gram": 100000,
+          "harga_500_gram": 50000,
+          "harga_250_gram": 25000,
+          "stok_gudang": 50,
+          "stok_toko": 20,
+          "tanggal_masuk": "2025-01-01",
+          "tanggal_keluar": "2025-01-02"
+        },
+        {
+          "no": 2,
+          "nama_barang": "Keyboard",
+          "kode_gudang": "KD002",
+          "kode_toko": "KD-TK002",
+          "harga_1000_gram": 80000,
+          "harga_500_gram": 40000,
+          "harga_250_gram": 20000,
+          "stok_gudang": 30,
+          "stok_toko": 10,
+          "tanggal_masuk": "2025-01-01",
+          "tanggal_keluar": "2025-01-02"
+        },
+        {
+          "no": 3,
+          "nama_barang": "Mouse",
+          "kode_gudang": "KD003",
+          "kode_toko": "KD-TK003",
+          "harga_1000_gram": 50000,
+          "harga_500_gram": 25000,
+          "harga_250_gram": 15000,
+          "stok_gudang": 40,
+          "stok_toko": 15,
+          "tanggal_masuk": "2025-01-01",
+          "tanggal_keluar": "2025-01-02"
+        }
+      ]
+    },
+    {
+      "name": "Tabel Kue - Group 2",
+      "data": [
+        {
+          "no": 4,
+          "nama_barang": "Tablet",
+          "kode_gudang": "KD004",
+          "kode_toko": "KD-TK004",
+          "harga_1000_gram": 200000,
+          "harga_500_gram": 100000,
+          "harga_250_gram": 50000,
+          "stok_gudang": 60,
+          "stok_toko": 25,
+          "tanggal_masuk": "2025-01-01",
+          "tanggal_keluar": "2025-01-02"
+        },
+        {
+          "no": 5,
+          "nama_barang": "Speaker",
+          "kode_gudang": "KD005",
+          "kode_toko": "KD-TK005",
+          "harga_1000_gram": 150000,
+          "harga_500_gram": 75000,
+          "harga_250_gram": 37500,
+          "stok_gudang": 80,
+          "stok_toko": 40,
+          "tanggal_masuk": "2025-01-01",
+          "tanggal_keluar": "2025-01-02"
+        },
+        {
+          "no": 6,
+          "nama_barang": "Printer",
+          "kode_gudang": "KD006",
+          "kode_toko": "KD-TK006",
+          "harga_1000_gram": 300000,
+          "harga_500_gram": 150000,
+          "harga_250_gram": 75000,
+          "stok_gudang": 120,
+          "stok_toko": 60,
+          "tanggal_masuk": "2025-01-01",
+          "tanggal_keluar": "2025-01-02"
+        }
+      ]
+    }
+  ]
+}
