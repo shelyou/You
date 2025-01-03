@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+        th, td {
+            border: 1px solid #000;
+            padding: 8px;
+            text-align: center;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        .money {
+            font-family: Arial, sans-serif;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        .table-title {
+            text-align: center;
+            font-size: 28px;
+            font-family: Georgia, 'Times New Roman', Times, serif;
+            font-weight: bold;
+            color: #4A90E2;
+            margin-bottom: 20px;
+        }
+        @media (max-width: 768px) {
+            table {
+                font-size: 13px;
+            }
+            th, td {
+                padding: 7px;
+            }
+            td {
+                word-wrap: break-word; /* Menjaga tanggal agar tidak terpotong */
+            }
+        }
+    </style>
+</head>
+<body>
+    <div id="content"></div>
+
+    <script>
+        function formatToRupiah(value) {
+            const number = parseFloat(value);
+            if (isNaN(number)) return "Rp.0,00";
+            return "Rp." + number.toLocaleString("id-ID", { minimumFractionDigits: 2 });
+        }
+
+        function formatTanggal(dateString) {
+            const date = new Date(dateString);
+            const day = date.getDate();
+            const month = date.getMonth() + 1; // bulan dimulai dari 0
+            const year = date.getFullYear();
+            return `${day}/${month}/${year}`;
+        }
+
+        async function loadJSON(file, title, isPlastic = false) {
+            try {
+                const response = await fetch(file);
+                if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+                const jsonData = await response.json();
+                renderTables(jsonData.tables, title, isPlastic);
+            } catch (error) {
+                console.error('Error loading JSON:', error);
+            }
+        }
+
+        function renderTables(tables, title, isPlastic) {
+            const contentDiv = document.getElementById('content');
+            const tableTitle = document.createElement('div');
+            tableTitle.className = 'table-title';
+            tableTitle.textContent = title;
+            contentDiv.appendChild(tableTitle);
+
+            tables.forEach(table => {
+                const subTableTitle = document.createElement('h3');
+                subTableTitle.textContent = table.name;
+                contentDiv.appendChild(subTableTitle);
+
+                const tableElement = document.createElement('table');
+                tableElement.innerHTML = `
+                    <thead>
+                        <tr>
+                            <th rowspan="3">No</th>
+                            <th colspan="${isPlastic ? '4' : '3'}">Detail Kode Barang</th>
+                            <th colspan="3">Harga</th>
+                            <th colspan="2">Stok</th>
+                            <th colspan="2">Tanggal</th>
+                        </tr>
+                        <tr>
+                            <th>Nama Barang</th>
+                            ${isPlastic ? '<th>Ukuran</th>' : ''}
+                            <th>Kode Gudang</th>
+                            <th>Kode Toko</th>
+                            <th>1000 Gram</th>
+                            <th>500 Gram</th>
+                            <th>250 Gram</th>
+                            <th>Gudang</th>
+                            <th>Toko</th>
+                            <th>Masuk</th>
+                            <th>Keluar</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                `;
+                const tbody = tableElement.querySelector('tbody');
+                table.data.forEach((item, index) => {
+                    if (isPlastic) {
+                        const firstRow = `
+                            <tr>
+                                <td rowspan="${item.ukuran.length}">${index + 1}</td>
+                                <td rowspan="${item.ukuran.length}">${item.nama_barang}</td>
+                                ${isPlastic ? `<td>${item.ukuran[0] || '-'}</td>` : ''}
+                                <td>${item.kode_gudang}</td>
+                                <td>${item.kode_toko}</td>
+                                <td class="money" onclick="editPrice(event, '1000_gram', ${item.harga_1000_gram}, ${index})">${formatToRupiah(item.harga_1000_gram)}</td>
+                                <td class="money" onclick="editPrice(event, '500_gram', ${item.harga_500_gram}, ${index})">${formatToRupiah(item.harga_500_gram)}</td>
+                                <td class="money" onclick="editPrice(event, '250_gram', ${item.harga_250_gram}, ${index})">${formatToRupiah(item.harga_250_gram)}</td>
+                                <td>${item.stok_gudang}</td>
+                                <td>${item.stok_toko}</td>
+                                <td>${formatTanggal(item.tanggal_masuk)}</td>
+                                <td>${formatTanggal(item.tanggal_keluar)}</td>
+                            </tr>
+                        `;
+                        tbody.innerHTML += firstRow;
+
+                        if (item.ukuran.length > 1) {
+                            item.ukuran.slice(1).forEach(ukuran => {
+                                const row = document.createElement('tr');
+                                row.innerHTML = `
+                                    <td>${ukuran}</td>
+                                    <td>${item.kode_gudang}</td>
+                                    <td>${item.kode_toko}</td>
+                                    <td class="money" onclick="editPrice(event, '1000_gram', ${item.harga_1000_gram}, ${index})">${formatToRupiah(item.harga_1000_gram)}</td>
+                                    <td class="money" onclick="editPrice(event, '500_gram', ${item.harga_500_gram}, ${index})">${formatToRupiah(item.harga_500_gram)}</td>
+                                    <td class="money" onclick="editPrice(event, '250_gram', ${item.harga_250_gram}, ${index})">${formatToRupiah(item.harga_250_gram)}</td>
+                                    <td>${item.stok_gudang}</td>
+                                    <td>${item.stok_toko}</td>
+                                    <td>${formatTanggal(item.tanggal_masuk)}</td>
+                                    <td>${formatTanggal(item.tanggal_keluar)}</td>
+                                `;
+                                tbody.appendChild(row);
+                            });
+                        }
+                    } else {
+                        const row = document.createElement('tr');
+                        row.innerHTML = `
+                            <td>${index + 1}</td>
+                            <td>${item.nama_barang}</td>
+                            <td>${item.kode_gudang}</td>
+                            <td>${item.kode_toko}</td>
+                            <td class="money" onclick="editPrice(event, '1000_gram', ${item.harga_1000_gram}, ${index})">${formatToRupiah(item.harga_1000_gram)}</td>
+                            <td class="money" onclick="editPrice(event, '500_gram', ${item.harga_500_gram}, ${index})">${formatToRupiah(item.harga_500_gram)}</td>
+                            <td class="money" onclick="editPrice(event, '250_gram', ${item.harga_250_gram}, ${index})">${formatToRupiah(item.harga_250_gram)}</td>
+                            <td>${item.stok_gudang}</td>
+                            <td>${item.stok_toko}</td>
+                            <td>${formatTanggal(item.tanggal_masuk)}</td>
+                            <td>${formatTanggal(item.tanggal_keluar)}</td>
+                        `;
+                        tbody.appendChild(row);
+                    }
+                });
+
+                contentDiv.appendChild(tableElement);
+            });
+        }
+
+        let currentPriceElement, currentPriceType, currentPriceIndex;
+
+        function editPrice(event, priceType, currentPrice, index) {
+            currentPriceElement = event.target;
+            currentPriceType = priceType;
+            currentPriceIndex = index;
+
+            const pin = prompt('Masukkan PIN untuk mengubah harga:');
+            const validPins = ['1234', '5678']; 
+
+            if (validPins.includes(pin)) {
+                const newPrice = prompt('Masukkan harga baru:');
+                if (newPrice !== null && !isNaN(newPrice) && newPrice > 0) {
+                    newPriceFormatted = formatToRupiah(newPrice);
+                    currentPriceElement.textContent = newPriceFormatted;
+                    updateLocalStorage(priceType, newPrice, currentPriceIndex);
+                } else {
+                    alert('Harga tidak valid!');
+                }
+            } else {
+                alert('PIN salah!');
+            }
+        }
+
+        function updateLocalStorage(priceType, newPrice, index) {
+            const data = JSON.parse(localStorage.getItem('dataStok')) || [];
+            const item = data[index];
+            if (priceType === '1000_gram') {
+                item.harga_1000_gram = parseFloat(newPrice);
+            } else if (priceType === '500_gram') {
+                item.harga_500_gram = parseFloat(newPrice);
+            } else if (priceType === '250_gram') {
+                item.harga_250_gram = parseFloat(newPrice);
+            }
+
+            // Debugging: Tampilkan data yang akan disimpan
+            console.log('Data disimpan ke localStorage:', data);
+
+            localStorage.setItem('dataStok', JSON.stringify(data)); 
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const storedData = localStorage.getItem('dataStok');
+            if (storedData) {
+                renderTables(JSON.parse(storedData), 'Daftar Stok', false);
+            } else {
+                loadJSON('mdkue.json', 'Daftar Stok Kue');
+                loadJSON('mdplastik.json', 'Daftar Stok Plastik', true);
+            }
+        });
+    </script>
+</body>
+</html>
